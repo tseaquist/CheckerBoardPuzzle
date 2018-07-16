@@ -280,10 +280,21 @@ public class CheckerBoard
             }
         }
     }
+    
+    public static void illustratePieces(Piece[] pieces)
+    {
+        int i = 0;
+        for(Piece piece : pieces)
+        {
+            System.out.println("Piece " + (++i) + ":");
+            System.out.println(piece.rotations[0].illustrate());
+        }
+    }
 
     public static void main(String[] args) throws Exception
     {
         Piece[] pieces = CheckerBoard.generatePieces(Paths.get("./resources/puzzle.csv"));
+        illustratePieces(pieces);
         
         CheckerBoard myboard = new CheckerBoard(pieces, 8);
         long time = System.currentTimeMillis();

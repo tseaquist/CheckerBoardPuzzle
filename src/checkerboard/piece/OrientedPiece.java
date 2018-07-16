@@ -98,4 +98,50 @@ public class OrientedPiece
     {
         return Arrays.toString(cells);
     }
+    
+    public String illustrate()
+    {
+        int minRow = Integer.MAX_VALUE;
+        int maxRow = Integer.MIN_VALUE;
+        int minCol = Integer.MAX_VALUE;
+        int maxCol = Integer.MIN_VALUE;
+        for(Cell cell : cells)
+        {
+            if(cell.row < minRow)
+            {
+                minRow = cell.row;
+            }
+            if(cell.row > maxRow)
+            {
+                maxRow = cell.row;
+            }
+            if(cell.col < minCol)
+            {
+                minCol = cell.col;
+            }
+            if(cell.col > maxCol)
+            {
+                maxCol = cell.col;
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        for(int r = minRow; r < maxRow + 1; r++)
+        {
+            for(int c = minCol; c < maxCol + 1; c++)
+            {
+                String marker = "  ";
+                for(Cell cell : cells)
+                {
+                    if(cell.row == r && cell.col == c)
+                    {
+                        marker = cell.color == Color.BLACK ? "X " : "O ";
+                        break;
+                    }
+                }
+                builder.append(marker);
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
 }
