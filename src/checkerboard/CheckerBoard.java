@@ -262,11 +262,9 @@ public class CheckerBoard
             }
         }
     }
-
-    public static void main(String[] args) throws Exception
+    
+    public static void printOldFormat(Piece[] pieces)
     {
-        Piece[] pieces = CheckerBoard.generatePieces(Paths.get("./resources/puzzle.csv"));
-        
         for(Piece piece : pieces)
         {
             System.out.println(piece.size);
@@ -281,6 +279,11 @@ public class CheckerBoard
                 System.out.println();
             }
         }
+    }
+
+    public static void main(String[] args) throws Exception
+    {
+        Piece[] pieces = CheckerBoard.generatePieces(Paths.get("./resources/puzzle.csv"));
         
         CheckerBoard myboard = new CheckerBoard(pieces, 8);
         long time = System.currentTimeMillis();
