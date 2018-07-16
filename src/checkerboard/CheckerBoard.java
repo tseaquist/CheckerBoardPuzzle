@@ -2,33 +2,46 @@ package checkerboard;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import checkerboard.piece.Cell;
+import checkerboard.piece.Cell.Color;
+import checkerboard.piece.OrientedPiece;
+import checkerboard.piece.Piece;
 
 public class CheckerBoard
 {
-    int numberoftimes;
-    int[] list = new int[13];
-    MutableInt count = new MutableInt(0);
-    boolean dif;
-    int[] oldlist = new int[13];
-    int[][] board = new int[8][8];
+    protected int numberOfSolutionsFound;
+    protected final int gridDimension;
+    protected final int numberOfPieces;
+    protected final int[] list;
+    protected final int[] oldlist;
+    protected MutableInt count = new MutableInt(0);
+    protected boolean dif;
+    protected int[][] board;
     Piece[] pieces = new Piece[12];
 
-    public CheckerBoard()
+    public CheckerBoard(Piece[] pieces, int gridDimension)
     {
+        this.gridDimension = gridDimension;
+        this.pieces = pieces;
+        this.numberOfPieces = pieces.length;
+        
+        board = new int[gridDimension][gridDimension];
+        
+        list = new int[numberOfPieces + 1];
+        oldlist = new int[numberOfPieces + 1];
         /* initialized the permutation array and saves a copy */
         for (int i = 0; i < 13; i++)
         {
             /* the duplicate array is used to see if the next permutation */
             list[i] = 12 - i; /* compares for optimization */
             oldlist[i] = list[i];
-            if (i < 12)
-            {
-                pieces[i] = new Piece();
-            }
         }
         oldlist[12] = 1;
         count.val = 12;
@@ -39,36 +52,46 @@ public class CheckerBoard
                 board[r][c] = -1;
             }
         }
-        numberoftimes = 1;
+        numberOfSolutionsFound = 0;
         dif = false;
     }
 
     public void placepiece(int row, int column, int loc, int rot)
     {
         /* place the piece */
-        for (int i = 1; i < 2 * pieces[list[loc]].number; i = i + 2)
+        int listLoc = list[loc];
+        for (Cell cell : pieces[listLoc].rotations[rot].cells)
         {
-            board[row + pieces[list[loc]].rotations[rot][i]][column + pieces[list[loc]].rotations[rot][i + 1]] = list[loc];
+            board[row + cell.row][column + cell.col] = listLoc;
         }
     }
 
     public void removepiece(int row, int column, int loc, int rot)
     {
         /* remove the piece */
-        for (int i = 1; i < 2 * pieces[list[loc]].number; i = i + 2)
-            board[row + pieces[list[loc]].rotations[rot][i]][column + pieces[list[loc]].rotations[rot][i + 1]] = -1;
+        int listLoc = list[loc];
+        for (Cell cell : pieces[listLoc].rotations[rot].cells)
+        {
+            board[row + cell.row][column + cell.col] = -1;
+        }
     }
 
     public boolean checkpiece(int row, int column, int loc, int rot)
     {
         /* checks to see if all the */
-        if ((((row + column) % 2 == 0) && (pieces[list[loc]].rotations[rot][0] != 0)) || /* squares are available */
-                (((row + column) % 2 == 1) && (pieces[list[loc]].rotations[rot][0] != 1)))
-            return false;
-        for (int b = 1; b < (pieces[list[loc]].number * 2); b = b + 2)
+        int listLoc = list[loc];
+        Piece piece = pieces[listLoc];
+        OrientedPiece rotation = piece.rotations[rot];
+        Color referenceColor = rotation.cells[0].color;
+        if ((((row + column) % 2 == 0) && (referenceColor != Color.WHITE)) || /* squares are available */
+                (((row + column) % 2 == 1) && (referenceColor != Color.BLACK)))
         {
-            int rownumber = pieces[list[loc]].rotations[rot][b];
-            int columnnumber = pieces[list[loc]].rotations[rot][b + 1];
+            return false;
+        }
+        for (Cell cell : piece.rotations[rot].cells)
+        {
+            int rownumber = cell.row;
+            int columnnumber = cell.col;
             if ((rownumber + row < 0) || (rownumber + row > 7) || (columnnumber + column < 0) || (columnnumber + column > 7)) return false;
             if (board[rownumber + row][columnnumber + column] != -1) return false;
         }
@@ -104,12 +127,11 @@ public class CheckerBoard
         }
     }
 
-    public void readPieces(Path path) throws IOException
+    public static Piece[] generatePieces(Path path) throws IOException
     {
+        List<Piece> pieces = new ArrayList<>();
         try (BufferedReader infile = Files.newBufferedReader(path))
         {
-            int count = 0;
-            int size;
             String line;
             while ((line = infile.readLine()) != null)
             {
@@ -118,33 +140,18 @@ public class CheckerBoard
                 {
                     continue;
                 }
-                size = Integer.parseInt(line);
-                pieces[count].number = size;
-                for (int rot = 0; rot < 4; rot++)
-                {
-                    line = infile.readLine();
-                    line = line.trim();
-                    char[] num = line.toCharArray();
-                    int ct = 0;
-                    for (int h = 0; h <= size * 2; h++)
-                    {
-                        if (num[ct] == '-')
-                        {
-                            ct++;
-                            pieces[count].rotations[rot][h] = Integer.parseInt(String.valueOf(num[ct])) * -1;
-                        } else
-                        {
-                            pieces[count].rotations[rot][h] = Integer.parseInt(String.valueOf(num[ct]));
-                        }
-                        ct++;
-                    }
-                }
-                count++;
+                pieces.add(new Piece(OrientedPiece.parse(line)));
             }
+            return pieces.toArray(new Piece[pieces.size()]);
         } catch (IOException e)
         {
             throw e;
         }
+    }
+    
+    public void solve() 
+    {
+        generatePermutation(numberOfPieces);
     }
 
     public void generatePermutation(int n)
@@ -158,7 +165,7 @@ public class CheckerBoard
         } else
         {
             dif = false;
-            for (int i = 12; i >= count.val; i--)
+            for (int i = numberOfPieces; i >= count.val; i--)
             {
                 if (list[i] != oldlist[i])
                 {
@@ -167,13 +174,13 @@ public class CheckerBoard
             }
             if (dif)
             {
-                for (int i = 0; i <= 12; i++)
+                for (int i = 0; i <= numberOfPieces; i++)
                 {
                     oldlist[i] = list[i];
                 }
-                MutableInt loc = new MutableInt(12);
+                MutableInt loc = new MutableInt(numberOfPieces);
                 MutableInt color = new MutableInt(0);
-                count.val = 12;
+                count.val = numberOfPieces;
                 solveit(loc, 0, 0, color, count);
             }
         }
@@ -197,7 +204,7 @@ public class CheckerBoard
             } else
             {
                 dif = false;
-                for (int i = 12; i >= count.val; i--)
+                for (int i = numberOfPieces; i >= count.val; i--)
                 {
                     if (list[i] != oldlist[i])
                     {
@@ -206,13 +213,13 @@ public class CheckerBoard
                 }
                 if (dif)
                 {
-                    for (int i = 0; i <= 12; i++)
+                    for (int i = 0; i <= numberOfPieces; i++)
                     {
                         oldlist[i] = list[i];
                     }
-                    MutableInt loc = new MutableInt(12);
+                    MutableInt loc = new MutableInt(numberOfPieces);
                     MutableInt color = new MutableInt(0);
-                    count.val = 12;
+                    count.val = numberOfPieces;
                     solveit(loc, 0, 0, color, count);
                 }
             }
@@ -228,10 +235,9 @@ public class CheckerBoard
         int times;
         if (loc.val == 0)
         {
-            System.out.println(numberoftimes);
+            System.out.println(++numberOfSolutionsFound);
             printboard();
             System.out.println();
-            numberoftimes++;
         } else
         {
             locateposition(row, column);
@@ -259,11 +265,26 @@ public class CheckerBoard
 
     public static void main(String[] args) throws Exception
     {
-        CheckerBoard myboard = new CheckerBoard();
-        int n = 12;
-        myboard.readPieces(Paths.get("C:/Users/Smeckle/Documents/Coding/cpp-projects/checker-board-puzzle/puzzle.dat"));
+        Piece[] pieces = CheckerBoard.generatePieces(Paths.get("./resources/puzzle.csv"));
+        
+        for(Piece piece : pieces)
+        {
+            System.out.println(piece.size);
+            for(OrientedPiece rotation : piece.rotations)
+            {
+                System.out.print(rotation.cells[0].color == Color.BLACK ? 1 : 0);
+                for(Cell cell : rotation.cells)
+                {
+                    System.out.print(cell.row);
+                    System.out.print(cell.col);
+                }
+                System.out.println();
+            }
+        }
+        
+        CheckerBoard myboard = new CheckerBoard(pieces, 8);
         long time = System.currentTimeMillis();
-        myboard.generatePermutation(n);
+        myboard.solve();
         System.out.println("Runtime: " + (System.currentTimeMillis() - time) / 1000.0);
     }
 
