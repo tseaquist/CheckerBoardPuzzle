@@ -76,7 +76,7 @@ public class OrientedPiece
     {
         String[] split = string.trim().split(",");
         int size = (split.length - 1) / 2;
-        boolean blackSpecified = split[0].equals("b") ? true : false;
+        boolean blackSpecified = split[0].equalsIgnoreCase("b") ? true : false;
         Cell[] cells = new Cell[size];
         boolean evenBlack = blackSpecified;
         for (int i = 1; i < split.length; i += 2)
