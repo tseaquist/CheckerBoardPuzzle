@@ -138,7 +138,7 @@ public class CheckerBoard
                 line = line.trim();
                 if (line.isEmpty())
                 {
-                    continue;
+                    continue; /* comment */
                 }
                 pieces.add(new Piece(OrientedPiece.parse(line)));
             }
