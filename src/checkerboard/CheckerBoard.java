@@ -97,7 +97,7 @@ public class CheckerBoard
         {
             int rownumber = cell.row;
             int columnnumber = cell.col;
-            if ((rownumber + row < 0) || (rownumber + row > 7) || (columnnumber + column < 0) || (columnnumber + column > 7)) return false;
+            if ((rownumber + row < 0) || (rownumber + row > gridDimension - 1) || (columnnumber + column < 0) || (columnnumber + column > gridDimension - 1)) return false;
             if (board[rownumber + row][columnnumber + column] != -1) return false;
         }
         return true;
