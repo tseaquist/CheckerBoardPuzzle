@@ -11,7 +11,7 @@ public class Main
         Piece[] pieces = CheckerBoard.generatePieces(Paths.get(args[0]));
         CheckerBoard.illustratePieces(pieces);
         
-        CheckerBoard myboard = new CheckerBoard(pieces, 8);
+        CheckerBoard myboard = new CheckerBoard(pieces);
         long time = System.currentTimeMillis();
         myboard.solve();
         System.out.println("Runtime: " + (System.currentTimeMillis() - time) / 1000.0);

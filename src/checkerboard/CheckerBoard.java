@@ -24,11 +24,16 @@ public class CheckerBoard
     protected MutableInt count = new MutableInt(0);
     protected boolean dif;
     protected int[][] board;
-    Piece[] pieces = new Piece[12];
+    Piece[] pieces;
 
-    public CheckerBoard(Piece[] pieces, int gridDimension)
+    public CheckerBoard(Piece[] pieces)
     {
-        this.gridDimension = gridDimension;
+        int totalSize = 0;
+        for(Piece piece : pieces)
+        {
+            totalSize += piece.size;
+        }
+        this.gridDimension = (int) Math.sqrt(totalSize);
         this.pieces = pieces;
         this.numberOfPieces = pieces.length;
         
@@ -37,17 +42,17 @@ public class CheckerBoard
         list = new int[numberOfPieces + 1];
         oldlist = new int[numberOfPieces + 1];
         /* initialized the permutation array and saves a copy */
-        for (int i = 0; i < 13; i++)
+        for (int i = 0; i < numberOfPieces + 1; i++)
         {
             /* the duplicate array is used to see if the next permutation */
-            list[i] = 12 - i; /* compares for optimization */
+            list[i] = numberOfPieces - i; /* compares for optimization */
             oldlist[i] = list[i];
         }
-        oldlist[12] = 1;
-        count.val = 12;
-        for (int r = 0; r < 8; r++)
+        oldlist[numberOfPieces] = 1;
+        count.val = numberOfPieces;
+        for (int r = 0; r < gridDimension; r++)
         {
-            for (int c = 0; c < 8; c++)
+            for (int c = 0; c < gridDimension; c++)
             {
                 board[r][c] = -1;
             }
@@ -101,13 +106,13 @@ public class CheckerBoard
     public void locateposition(MutableInt row, MutableInt column)
     {
         /* locates the location for placing the next piece */
-        for (; column.val < 8; column.val++)
+        for (; column.val < gridDimension; column.val++)
         {
             if (board[row.val][column.val] == -1) return;
         }
-        for (; row.val < 8; ++row.val)
+        for (; row.val < gridDimension; ++row.val)
         {
-            for (column.val = 0; column.val < 8; column.val++)
+            for (column.val = 0; column.val < gridDimension; column.val++)
             {
                 if (board[row.val][column.val] == -1) return;
             }
@@ -116,9 +121,9 @@ public class CheckerBoard
 
     public void printboard()
     {
-        for (int r = 0; r < 8; r++)
+        for (int r = 0; r < gridDimension; r++)
         {
-            for (int c = 0; c < 8; c++)
+            for (int c = 0; c < gridDimension; c++)
             {
                 String val = Integer.toString(board[r][c]);
                 System.out.print(String.format("%-3s", val));
