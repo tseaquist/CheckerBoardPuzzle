@@ -248,7 +248,7 @@ public class CheckerBoard
             locateposition(row, column);
             if (list[loc.val] == 0)
             {
-                times = 2;
+                times = 4;  /* This use to be 2. Seems like a bogus test. */
             } else
             {
                 times = 4;
@@ -291,7 +291,7 @@ public class CheckerBoard
         int i = 0;
         for(Piece piece : pieces)
         {
-            System.out.println("Piece " + (++i) + ":");
+            System.out.println("Piece " + (i++) + ":");
             System.out.println(piece.rotations[0].illustrate());
         }
     }
