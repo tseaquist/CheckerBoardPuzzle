@@ -10,6 +10,8 @@ public class Main
     {
         Piece[] pieces = CheckerBoard.generatePieces(Paths.get(args[0]));
         CheckerBoard.illustratePieces(pieces);
+        System.out.println(" ");
+        System.out.println("Solutions: ");
         
         CheckerBoard myboard = new CheckerBoard(pieces);
         long time = System.currentTimeMillis();

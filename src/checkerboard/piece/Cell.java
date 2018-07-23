@@ -2,7 +2,7 @@ package checkerboard.piece;
 
 public class Cell
 {
-    public final int row;
+	public final int row;
     public final int col;
     public final Cell.Color color;
 
@@ -31,5 +31,11 @@ public class Cell
                 return "W";
             }
         }
+    }
+    
+    public boolean equal(Cell c)
+    {
+    	if (c.row == this.row && c.col == this.col && c.color == this.color) return true;
+    	return false;
     }
 }

@@ -9,10 +9,11 @@ public class OrientedPiece
 {
     public final int size;
     public final Cell[] cells;
-
+    
     public OrientedPiece(Cell[] cells)
     {
         this.size = cells.length;
+        
         Cell referenceCell = null;
         for (Cell candidate : cells)
         {
@@ -144,4 +145,15 @@ public class OrientedPiece
         }
         return builder.toString();
     }
+    
+    
+    public boolean equal(OrientedPiece op)
+    {
+    	if (op.size != this.size) return false;
+    	for(int i = 0; i < this.size; i++) {
+    		if(!this.cells[i].equal(op.cells[i])) return false;
+    		}
+    	return true;
+    }
 }
+    
