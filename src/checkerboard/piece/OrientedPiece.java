@@ -49,13 +49,13 @@ public class OrientedPiece
         }
 
         Arrays.sort(newCells, (c1, c2) -> {
-            int compare = Integer.compare(c1.row * c1.row, c2.row * c2.row);
+            int compare = Integer.compare(c1.row , c2.row );
             if (compare != 0)
             {
                 return compare;
             } else
             {
-                return Integer.compare(c1.col * c1.col, c2.col * c2.col);
+                return Integer.compare(c1.col ,  c2.col);
             }
         });
 

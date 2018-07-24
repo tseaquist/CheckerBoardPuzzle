@@ -287,17 +287,21 @@ public class CheckerBoard
         int i = 0;
         for(Piece piece : pieces)
         {
-            System.out.println("Piece " + (i+1) + ":");
-            System.out.println("Piece " + (i+1) + " size: " + (piece.size) + " Number of Rotations: " + (piece.numberofrots));    
+            System.out.println("Piece " + (i) + ":");
+            System.out.println("Piece " + (i) + " size: " + (piece.size) + " Number of Rotations: " + (piece.numberofrots));    
             System.out.println(piece.rotations[0].illustrate());           	     	
-          	i++;
-/*
+
+
             for (int j = 0; j < piece.numberofrots; j++)
             {
             	System.out.println("Piece " + (i) + "  Rotation " + (j) + ":");
             	System.out.println(piece.rotations[j].illustrate());
+            	for (int k=0; k < piece.rotations[j].size; k++) {
+            		System.out.println("(" + (piece.rotations[j].cells[k].row) + "," + (piece.rotations[j].cells[k].col) + ")");
+            	}
+            		
             }
-   */         
+          	i++;     
         }
     }
 
