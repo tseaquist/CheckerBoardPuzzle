@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import checkerboard.piece.Cell;
@@ -31,7 +29,7 @@ public class CheckerBoard
         int totalSize = 0;
         for(Piece piece : pieces)
         {
-            totalSize += piece.size;
+            totalSize += piece.numCells;
         }
         this.gridDimension = (int) Math.sqrt(totalSize);
         this.pieces = pieces;
@@ -65,7 +63,7 @@ public class CheckerBoard
     {
         /* place the piece */
         int listLoc = list[loc];
-        for (Cell cell : pieces[listLoc].rotations[rot].cells)
+        for (Cell cell : pieces[listLoc].rotations.get(rot).cells)
         {
             board[row + cell.row][column + cell.col] = listLoc;
         }
@@ -75,7 +73,7 @@ public class CheckerBoard
     {
         /* remove the piece */
         int listLoc = list[loc];
-        for (Cell cell : pieces[listLoc].rotations[rot].cells)
+        for (Cell cell : pieces[listLoc].rotations.get(rot).cells)
         {
             board[row + cell.row][column + cell.col] = -1;
         }
@@ -86,14 +84,14 @@ public class CheckerBoard
         /* checks to see if all the */
         int listLoc = list[loc];
         Piece piece = pieces[listLoc];
-        OrientedPiece rotation = piece.rotations[rot];
+        OrientedPiece rotation = piece.rotations.get(rot);
         Color referenceColor = rotation.cells[0].color;
         if ((((row + column) % 2 == 0) && (referenceColor != Color.WHITE)) || /* squares are available */
                 (((row + column) % 2 == 1) && (referenceColor != Color.BLACK)))
         {
             return false;
         }
-        for (Cell cell : piece.rotations[rot].cells)
+        for (Cell cell : piece.rotations.get(rot).cells)
         {
             int rownumber = cell.row;
             int columnnumber = cell.col;
@@ -248,7 +246,7 @@ public class CheckerBoard
             locateposition(row, column);
             int listLoc = list[loc.val];
             Piece piece = pieces[listLoc];
-            times = piece.numberofrots;
+            times = piece.getNumRotations();
             for (int rot = 0; rot < times; rot++)
             {
                 if (checkpiece(row.val, column.val, loc.val, rot))
@@ -268,7 +266,7 @@ public class CheckerBoard
     {
         for(Piece piece : pieces)
         {
-            System.out.println(piece.size);
+            System.out.println(piece.numCells);
             for(OrientedPiece rotation : piece.rotations)
             {
                 System.out.print(rotation.cells[0].color == Color.BLACK ? 1 : 0);
@@ -288,16 +286,16 @@ public class CheckerBoard
         for(Piece piece : pieces)
         {
             System.out.println("Piece " + (i) + ":");
-            System.out.println("Piece " + (i) + " size: " + (piece.size) + " Number of Rotations: " + (piece.numberofrots));    
-            System.out.println(piece.rotations[0].illustrate());           	     	
+            System.out.println("Piece " + (i) + " size: " + (piece.numCells) + " Number of Rotations: " + (piece.getNumRotations()));    
+            System.out.println(piece.rotations.get(0).illustrate());           	     	
 
 
-            for (int j = 0; j < piece.numberofrots; j++)
+            for (int j = 0; j < piece.getNumRotations(); j++)
             {
             	System.out.println("Piece " + (i) + "  Rotation " + (j) + ":");
-            	System.out.println(piece.rotations[j].illustrate());
-            	for (int k=0; k < piece.rotations[j].size; k++) {
-            		System.out.println("(" + (piece.rotations[j].cells[k].row) + "," + (piece.rotations[j].cells[k].col) + ")");
+            	System.out.println(piece.rotations.get(j).illustrate());
+            	for (int k=0; k < piece.rotations.get(j).size; k++) {
+            		System.out.println("(" + (piece.rotations.get(j).cells[k].row) + "," + (piece.rotations.get(j).cells[k].col) + ")");
             	}
             		
             }

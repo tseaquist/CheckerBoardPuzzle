@@ -1,29 +1,35 @@
 package checkerboard.piece;
 
+import java.util.ArrayList;
+
 public class Piece
 {
-    public static final int NUM_ROTATIONS = 4;
-    public final int numberofrots;
-    public final int size;
-    public final OrientedPiece[] rotations;
+    public static final int MAX_NUM_ROTATIONS = 4;
+    public final int numCells;
+    public final ArrayList<OrientedPiece> rotations;
 
     public Piece(OrientedPiece orientedPiece)
     {
-    	int nrots = 4;
-        this.size = orientedPiece.size;
-        rotations = new OrientedPiece[NUM_ROTATIONS];
-        OrientedPiece currentRotation = orientedPiece;
-        for(int i = 0; i < NUM_ROTATIONS; i++)
+        this.numCells = orientedPiece.size;
+        rotations = new ArrayList<>(MAX_NUM_ROTATIONS);
+        rotations.add(orientedPiece);
+        OrientedPiece last = orientedPiece;
+        for(int i = 0; i < MAX_NUM_ROTATIONS-1; i++)
         {
-            rotations[i] = currentRotation;
-            currentRotation = currentRotation.rotate();
+            last = last.rotate();
+            if(!rotations.contains(last))
+            {
+                rotations.add( last );
+            }
         }
-        if (rotations[0].equal(rotations[2])) nrots = 2;
-        if (rotations[0].equal(rotations[1])) nrots = 1;
-        
-        this.numberofrots = nrots;
+    }
+    
+    public int getNumRotations()
+    {
+        return rotations.size();
     }
 
+    @Override
     public String toString()
     {
         StringBuilder builder = new StringBuilder();

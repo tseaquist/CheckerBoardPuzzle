@@ -13,6 +13,7 @@ public class Cell
         this.color = color;
     }
 
+    @Override
     public String toString()
     {
         return "(" + row + "," + col + "," + color + ")";
@@ -33,9 +34,34 @@ public class Cell
         }
     }
     
-    public boolean equal(Cell c)
+    @Override
+    public int hashCode()
     {
-    	if (c.row == this.row && c.col == this.col && c.color == this.color) return true;
-    	return false;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + col;
+        result = prime * result + ((color == null) ? 0 : color.hashCode());
+        result = prime * result + row;
+        return result;
     }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Cell other = (Cell) obj;
+        if (col != other.col)
+            return false;
+        if (color != other.color)
+            return false;
+        if (row != other.row)
+            return false;
+        return true;
+    }
+    
 }

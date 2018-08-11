@@ -1,7 +1,6 @@
 package checkerboard.piece;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 import checkerboard.piece.Cell.Color;
 
@@ -147,13 +146,31 @@ public class OrientedPiece
     }
     
     
-    public boolean equal(OrientedPiece op)
+    
+    @Override
+    public int hashCode()
     {
-    	if (op.size != this.size) return false;
-    	for(int i = 0; i < this.size; i++) {
-    		if(!this.cells[i].equal(op.cells[i])) return false;
-    		}
-    	return true;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(cells);
+        result = prime * result + size;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        OrientedPiece other = (OrientedPiece) obj;
+        if (!Arrays.equals(cells, other.cells))
+            return false;
+        if (size != other.size)
+            return false;
+        return true;
     }
 }
-    
