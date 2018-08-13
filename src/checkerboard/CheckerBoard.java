@@ -31,7 +31,7 @@ public class CheckerBoard
         {
             totalSize += piece.numCells;
         }
-        this.gridDimension = (int) Math.sqrt(totalSize);
+        this.gridDimension = (int) Math.sqrt(totalSize); /* Why not round up to the next int ??? */
         this.pieces = pieces;
         this.numberOfPieces = pieces.length;
         
@@ -63,7 +63,7 @@ public class CheckerBoard
     {
         /* place the piece */
         int listLoc = list[loc];
-        for (Cell cell : pieces[listLoc].rotations.get(rot).cells)
+        for (Cell cell : pieces[listLoc].rotations.get(rot).cells) /* what is the idea of "get". See also getnumrotations ??? */
         {
             board[row + cell.row][column + cell.col] = listLoc;
         }
@@ -85,7 +85,7 @@ public class CheckerBoard
         int listLoc = list[loc];
         Piece piece = pieces[listLoc];
         OrientedPiece rotation = piece.rotations.get(rot);
-        Color referenceColor = rotation.cells[0].color;
+        Color referenceColor = rotation.cells[0].color;  /* Is this an efficiency consideration or style ??? */
         if ((((row + column) % 2 == 0) && (referenceColor != Color.WHITE)) || /* squares are available */
                 (((row + column) % 2 == 1) && (referenceColor != Color.BLACK)))
         {

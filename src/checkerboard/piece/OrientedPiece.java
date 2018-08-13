@@ -148,7 +148,7 @@ public class OrientedPiece
     
     
     @Override
-    public int hashCode()
+    public int hashCode() /* Duuuuude. More hashing ??? */
     {
         final int prime = 31;
         int result = 1;
@@ -158,7 +158,7 @@ public class OrientedPiece
     }
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(Object obj) /* Works even when called with a random Object ??? */
     {
         if (this == obj)
             return true;

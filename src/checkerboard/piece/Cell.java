@@ -35,7 +35,7 @@ public class Cell
     }
     
     @Override
-    public int hashCode()
+    public int hashCode()  /* Whoaa...this is fancy. What's do ??? */
     {
         final int prime = 31;
         int result = 1;
@@ -46,7 +46,7 @@ public class Cell
     }
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(Object obj) /* Slick. What does getClass() do. How does this work? What is Object ??? */
     {
         if (this == obj)
             return true;
